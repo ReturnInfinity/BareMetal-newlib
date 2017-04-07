@@ -1,0 +1,10 @@
+--- config.sub	2016-11-09 07:48:12.383781456 -0800
++++ config.sub	2016-11-09 07:48:27.352131331 -0800
+@@ -1379,6 +1379,7 @@
+ 	      | -sym* | -kopensolaris* | -plan9* \
+ 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
+ 	      | -aos* | -aros* | -cloudabi* | -sortix* \
++	      | -baremetal* \
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \
