@@ -1,6 +1,7 @@
 #!/bin/sh
 
 echo Downloading newlib
+
 wget ftp://sourceware.org/pub/newlib/newlib-2.5.0.tar.gz
 tar xf newlib-2.5.0.tar.gz
 rm newlib-2.5.0.tar.gz
@@ -18,7 +19,6 @@ patch < configure.host.patch
 cd libc/sys
 patch < configure.in.patch
 cd ../../../..
-pwd
 
 mkdir newlib-2.5.0/newlib/libc/sys/baremetal
 cp patches/baremetal/* newlib-2.5.0/newlib/libc/sys/baremetal/
@@ -46,14 +46,9 @@ cp libm.a ../../..
 cp crt0.o ../../..
 cd ../../../..
 
-#echo Compiling test application...
+echo Compiling test application...
 
-#cp ../src/BareMetal-OS/newlib/*.* .
+gcc -I newlib-2.5.0/newlib/libc/include/ -c test.c -o test.o
+ld -T app.ld -o test.app crt0.o test.o libc.a
 
-#gcc -I newlib-2.5.0/newlib/libc/include/ -c test.c -o test.o
-#ld -T app.ld -o test.app crt0.o test.o libc.a
-
-#cp ../src/BareMetal-OS/programs/libBareMetal.* .
-#gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o libBareMetal.o libBareMetal.c
-
-#echo Complete!
+echo Complete!
