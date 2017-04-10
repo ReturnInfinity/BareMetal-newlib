@@ -42,7 +42,6 @@ echo Build complete!
 
 cd x86_64-pc-baremetal/newlib/
 cp libc.a ../../..
-cp libm.a ../../..
 cp crt0.o ../../..
 cd ../../..
 
