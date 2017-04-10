@@ -1,18 +1,20 @@
 #!/bin/sh
 
+ver="2.5.0"
+
 echo Downloading newlib
 
-wget ftp://sourceware.org/pub/newlib/newlib-2.5.0.tar.gz
-tar xf newlib-2.5.0.tar.gz
-rm newlib-2.5.0.tar.gz
+wget ftp://sourceware.org/pub/newlib/newlib-$ver.tar.gz
+tar xf newlib-$ver.tar.gz
+rm newlib-$ver.tar.gz
 mkdir build
 
 echo Configuring newlib
 
-cp patches/config.sub.patch newlib-2.5.0/
-cp patches/configure.host.patch newlib-2.5.0/newlib/
-cp patches/configure.in.patch newlib-2.5.0/newlib/libc/sys/
-cd newlib-2.5.0
+cp patches/config.sub.patch newlib-$ver/
+cp patches/configure.host.patch newlib-$ver/newlib/
+cp patches/configure.in.patch newlib-$ver/newlib/libc/sys/
+cd newlib-$ver
 patch < config.sub.patch
 cd newlib
 patch < configure.host.patch
@@ -20,16 +22,16 @@ cd libc/sys
 patch < configure.in.patch
 cd ../../../..
 
-mkdir newlib-2.5.0/newlib/libc/sys/baremetal
-cp patches/baremetal/* newlib-2.5.0/newlib/libc/sys/baremetal/
+mkdir newlib-$ver/newlib/libc/sys/baremetal
+cp patches/baremetal/* newlib-$ver/newlib/libc/sys/baremetal/
 
-cd newlib-2.5.0/newlib/libc/sys
+cd newlib-$ver/newlib/libc/sys
 autoconf
 cd baremetal
 autoreconf
 cd ../../../../../build
 
-../newlib-2.5.0/configure --target=x86_64-pc-baremetal --disable-multilib
+../newlib-$ver/configure --target=x86_64-pc-baremetal --disable-multilib
 
 sed -i 's/TARGET=x86_64-pc-baremetal-/TARGET=/g' Makefile
 sed -i 's/WRAPPER) x86_64-pc-baremetal-/WRAPPER) /g' Makefile
@@ -47,7 +49,7 @@ cd ../../..
 
 echo Compiling test application...
 
-gcc -I newlib-2.5.0/newlib/libc/include/ -c test.c -o test.o
+gcc -I newlib-$ver/newlib/libc/include/ -c test.c -o test.o
 ld -T app.ld -o test.app crt0.o test.o libc.a
 
 echo Complete!
