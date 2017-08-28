@@ -19,7 +19,7 @@ You will need the following Linux packages. Use your prefered packange manager t
 
 Run the build script:
 
-	./build.sh
+	./build-newlib.sh
 
 After a lengthy compile you should have a libc.a and crt0.o in your directory
 
