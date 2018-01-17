@@ -1,7 +1,7 @@
 #include <stdio.h> // fflush()
 
 extern int main(int argc, char *argv[]);
-unsigned long b_system_config_crt0(unsigned long function, unsigned long var);
+// unsigned long b_system_config_crt0(unsigned long function, unsigned long var);
 
 extern char __bss_start, _end; // BSS should be the last think before _end
 
@@ -18,11 +18,11 @@ _start()
 	}
 
 	// Parse argv[*]
-	for(i=0; i<argc; i++)
-		argv[i] = (char *)b_system_config_crt0(2, (unsigned long)i);
+	//for(i=0; i<argc; i++)
+	//	argv[i] = (char *)b_system_config_crt0(2, (unsigned long)i);
 
 	// Set process start time to current time
-	asm volatile ("call *0x001000C8");
+	// asm volatile ("call *0x001000C8");
 
 	retval = main(argc, argv);
 
@@ -31,13 +31,14 @@ _start()
 	return retval;
 }
 
+/*
 unsigned long b_system_config_crt0(unsigned long function, unsigned long var)
 {
 	unsigned long tlong;
 	asm volatile ("call *0x001000B0" : "=a"(tlong) : "d"(function), "a"(var));
 	return tlong;
 }
-
+*/
 
 // EOF
 
