@@ -7,10 +7,9 @@ extern char __bss_start, _end; // BSS should be the last think before _end
 
 _start()
 {
-//	int argc, i, retval;
+	int argc = 0, i, retval;
 //	argc = (int)b_system_config_crt0(1, 0);
-//	char *argv[argc], *c, *tchar;
-	int retval;
+	char *argv[argc], *c, *tchar;
 
 	// zero BSS
 	for(c = &__bss_start; c < &_end; c++)
@@ -25,8 +24,7 @@ _start()
 	// Set process start time to current time
 	// asm volatile ("call *0x001000C8");
 
-	//retval = main(argc, argv);
-	retval = main();
+	retval = main(argc, argv);
 	
 	fflush(stdout);
 
