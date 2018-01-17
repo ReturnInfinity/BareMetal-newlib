@@ -24,7 +24,7 @@ inline void outportbyte(unsigned int port,unsigned char value);
 void _exit(int val)
 {
 	unsigned int reset = 256;
-	asm volatile ("call *0x001000B8" : : "d"(reset));
+	asm volatile ("call *0x00100068" : : "d"(reset));
 }
 
 // execve -- Transfer control to a new process
@@ -118,14 +118,10 @@ int read(int file, char *ptr, int len)
 {
 	if (file == 0) // STDIN
 	{
-		asm volatile ("call *0x00100020" : "=c"(len) : "c"(len), "D"(ptr));
+		asm volatile ("call *0x00100010" : "=c"(len) : "c"(len), "D"(ptr));
 		ptr[len] = '\n'; // BareMetal does not add a newline after keyboard input ...
 		ptr[len+1] = 0; // ... but C expects it.
 		len+=1;
-	}
-	else
-	{
-		asm volatile ("call *0x00100080" : "=c"(len) : "a"(file));
 	}
 	return len;
 }
@@ -246,7 +242,7 @@ int gettimeofday(struct timeval *p, void *z)
 clock_t times(struct tms *buf){
 	// get current process time
 	unsigned long long proc_time;
-	asm volatile ("call *0x001000C0" : "=a"(proc_time));
+	asm volatile ("call *0x00100060" : "=a"(proc_time));
 
 	/*
 	 * Process time is assumed to be the CPU time charged for
