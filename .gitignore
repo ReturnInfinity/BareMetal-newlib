@@ -4,6 +4,9 @@
 # Build directory
 /build
 
+# Test program
+test
+
 # Object files
 *.o
 *.ko
