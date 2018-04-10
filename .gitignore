@@ -1,3 +1,9 @@
+# Downloaded newlib files
+/newlib-*
+
+# Build directory
+/build
+
 # Object files
 *.o
 *.ko
