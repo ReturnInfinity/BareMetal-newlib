@@ -1,13 +1,21 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
+set -u
 
 ver="2.5.0"
 
-echo Downloading newlib
+if [ ! -e "newlib-$ver.tar.gz" ]; then
+	echo Downloading newlib
+	wget ftp://sourceware.org/pub/newlib/newlib-$ver.tar.gz
+fi
 
-wget ftp://sourceware.org/pub/newlib/newlib-$ver.tar.gz
-tar xf newlib-$ver.tar.gz
-rm newlib-$ver.tar.gz
-mkdir build
+if [ ! -e "newlib-$ver" ]; then
+	echo "Extracting newlib"
+	tar xf newlib-$ver.tar.gz
+fi
+
+mkdir -p build
 
 echo Configuring newlib
 
@@ -22,7 +30,7 @@ cd libc/sys
 patch < configure.in.patch
 cd ../../../..
 
-mkdir newlib-$ver/newlib/libc/sys/baremetal
+mkdir -p newlib-$ver/newlib/libc/sys/baremetal
 cp patches/baremetal/* newlib-$ver/newlib/libc/sys/baremetal/
 
 cd newlib-$ver/newlib/libc/sys
@@ -31,25 +39,16 @@ cd baremetal
 autoreconf
 cd ../../../../../build
 
+export CFLAGS_FOR_TARGET="-mno-red-zone -fomit-frame-pointer -fno-stack-protector -mcmodel=large"
+
 ../newlib-$ver/configure --target=x86_64-pc-baremetal --disable-multilib
 
 sed -i 's/TARGET=x86_64-pc-baremetal-/TARGET=/g' Makefile
 sed -i 's/WRAPPER) x86_64-pc-baremetal-/WRAPPER) /g' Makefile
 
-echo Building Newlib
+cd ..
 
-make
+echo $PWD
+./build.bash
 
-echo Build complete!
-
-cd x86_64-pc-baremetal/newlib/
-cp libc.a ../../..
-cp crt0.o ../../..
-cd ../../..
-
-echo Compiling test application...
-
-gcc -I newlib-$ver/newlib/libc/include/ -c test.c -o test.o
-ld -T app.ld -o test.app crt0.o test.o libc.a
-
-echo Complete!
+./build-test-app.bash
