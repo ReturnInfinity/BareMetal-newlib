@@ -15,8 +15,8 @@
 #include <stdio.h>
 #include <errno.h>
 
-inline unsigned char inportbyte(unsigned int port);
-inline void outportbyte(unsigned int port,unsigned char value);
+unsigned char inportbyte(unsigned int port);
+void outportbyte(unsigned int port,unsigned char value);
 
 // --- Process Control ---
 
@@ -266,7 +266,7 @@ void __stack_chk_fail(void)
 	write(1, "Stack smashin' detected!\n", 25);
 }
 
-inline unsigned char inportbyte(unsigned int port)
+unsigned char inportbyte(unsigned int port)
 {
 	// read a byte from a port
 	unsigned char ret;
@@ -274,7 +274,7 @@ inline unsigned char inportbyte(unsigned int port)
 	return ret;
 }
 
-inline void outportbyte(unsigned int port,unsigned char value)
+void outportbyte(unsigned int port,unsigned char value)
 {
 	// write a byte to a port
 	asm volatile ("outb %%al,%%dx": :"d"(port),"a"(value));
