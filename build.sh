@@ -17,5 +17,3 @@ cd x86_64-pc-baremetal/newlib/
 cp libc.a ../../..
 cp crt0.o ../../..
 cd ../../..
-
-./build-test-app.bash
