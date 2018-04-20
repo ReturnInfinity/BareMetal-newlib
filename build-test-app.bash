@@ -1,14 +1,25 @@
 #!/bin/bash
 
 set -e
-set -u
 
 ver="2.5.0"
 
 echo Compiling test application...
 
-gcc -I newlib-$ver/newlib/libc/include/ -c test.c -o test.o
-ld -T app.ld -o test crt0.o test.o libc.a
-objcopy -O binary test test.app
+CC=gcc
+LD=ld
+OBJCOPY=objcopy
+
+CFLAGS="${CFLAGS} -I newlib-$ver/newlib/libc/include"
+CFLAGS="${CFLAGS} -fomit-frame-pointer -fno-stack-protector"
+CFLAGS="${CFLAGS} -mno-red-zone"
+CFLAGS="${CFLAGS} -mcmodel=large"
+CFLAGS="${CFLAGS} -g"
+
+LDFLAGS="${LDFLAGS} -T app.ld"
+
+$CC $CFLAGS -c test.c -o test.o
+$LD $LDFLAGS -o test crt0.o test.o libc.a
+$OBJCOPY -O binary test test.app
 
 echo Complete!
