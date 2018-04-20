@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -u
 
 ver="2.5.0"
 
@@ -39,7 +38,10 @@ cd baremetal
 autoreconf
 cd ../../../../../build
 
-export CFLAGS_FOR_TARGET="-mno-red-zone -fomit-frame-pointer -fno-stack-protector -mcmodel=large"
+CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -mno-red-zone -mcmodel=large"
+CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -fomit-frame-pointer -fno-stack-protector"
+CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -g"
+export CFLAGS_FOR_TARGET
 
 ../newlib-$ver/configure --target=x86_64-pc-baremetal --disable-multilib
 
@@ -48,7 +50,6 @@ sed -i 's/WRAPPER) x86_64-pc-baremetal-/WRAPPER) /g' Makefile
 
 cd ..
 
-echo $PWD
 ./build.bash
 
 ./build-test-app.bash
