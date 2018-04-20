@@ -17,6 +17,7 @@ CFLAGS="${CFLAGS} -mcmodel=large"
 CFLAGS="${CFLAGS} -g"
 
 LDFLAGS="${LDFLAGS} -T app.ld"
+LDFLAGS="${LDFLAGS} -z max-page-size=0x1000"
 
 $CC $CFLAGS -c test.c -o test.o
 $LD $LDFLAGS -o test crt0.o test.o libc.a
