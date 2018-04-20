@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include "container.h"
+
 unsigned char inportbyte(unsigned int port);
 void outportbyte(unsigned int port,unsigned char value);
 
@@ -116,6 +118,11 @@ int open(const char *name, int flags, ...)
 // read - Read from a file
 int read(int file, char *ptr, int len)
 {
+	(void) file;
+	(void) ptr;
+	(void) len;
+	return -1;
+#if 0
 	if (file == 0) // STDIN
 	{
 		asm volatile ("call *0x00100010" : "=c"(len) : "c"(len), "D"(ptr));
@@ -124,6 +131,7 @@ int read(int file, char *ptr, int len)
 		len+=1;
 	}
 	return len;
+#endif
 }
 
 // fstat - Status of an open file.
@@ -147,21 +155,6 @@ int unlink(char *name)
 {
 	errno = ENOENT;
 	return -1;
-}
-
-// write - Write to a file
-int write(int file, char *ptr, int len)
-{
-	if (file == 1 || file == 2) // STDOUT = 1, STDERR = 2
-	{
-		asm volatile ("call *0x00100018" : : "S"(ptr), "c"(len)); // Make sure source register (RSI) has the string address (str)
-	}
-	else
-	{
-		// File!
-		return -1;
-	}
-	return len;
 }
 
 // --- Memory ---
@@ -263,7 +256,13 @@ clock_t times(struct tms *buf){
 
 void __stack_chk_fail(void)
 {
-	write(1, "Stack smashin' detected!\n", 25);
+	struct container *container = get_container();
+	if (container == NULL)
+		return;
+	else if (container->write == NULL)
+		return;
+	else
+		container->write(2, "Stack smashing detected.\n", 25, container->container_host);
 }
 
 unsigned char inportbyte(unsigned int port)
