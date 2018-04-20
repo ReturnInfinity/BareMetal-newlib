@@ -50,6 +50,6 @@ sed -i 's/WRAPPER) x86_64-pc-baremetal-/WRAPPER) /g' Makefile
 
 cd ..
 
-./build.bash
+./build.sh
 
-./build-test-app.bash
+./build-test-app.sh
