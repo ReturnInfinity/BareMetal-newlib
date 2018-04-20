@@ -2,7 +2,7 @@
 
 set -e
 
-ver="2.5.0"
+ver="3.0.0"
 
 if [ ! -e "newlib-$ver.tar.gz" ]; then
 	echo Downloading newlib
@@ -41,6 +41,8 @@ cd ../../../../../build
 CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -mno-red-zone -mcmodel=large"
 CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -fomit-frame-pointer -fno-stack-protector"
 CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -g"
+CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -D__DYNAMIC_REENT__=1"
+CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -DREENTRANT_SYSCALLS_PROVIDED=1"
 export CFLAGS_FOR_TARGET
 
 ../newlib-$ver/configure --target=x86_64-pc-baremetal --disable-multilib

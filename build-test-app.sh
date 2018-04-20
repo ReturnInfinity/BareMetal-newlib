@@ -2,7 +2,7 @@
 
 set -e
 
-ver="2.5.0"
+ver="3.0.0"
 
 echo Compiling test application...
 

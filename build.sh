@@ -3,13 +3,13 @@
 set -e
 set -u
 
-ver="2.5.0"
+ver="3.0.0"
 
 echo Building Newlib
 
 cd build
 
-make
+make -j
 
 echo Build complete!
 
