@@ -3,9 +3,15 @@ ENTRY(_start)
 SECTIONS
 {
 	. = 0xFFFF800000000000;
-	.text : { *(.text) }
-	.data : { *(.data .rodata) QUAD(ADDR(.bss)+SIZEOF(.bss)) }
-	__bss_start = .;
-	.bss : { *(.bss) }
-	end = .; _end = .; __end = .;
+	.text : {
+		*(.text)
+	}
+	.data : {
+		*(.data .rodata) QUAD(ADDR(.bss)+SIZEOF(.bss))
+	}
+	.bss : {
+		__bss_start = .;
+		*(.bss)
+		__bss_stop = .;
+	}
 }
