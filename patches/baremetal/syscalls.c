@@ -176,14 +176,14 @@ int unlink(char *name)
 caddr_t sbrk(int incr)
 {
 //	asm volatile ("xchg %bx, %bx"); // Debug
-	extern caddr_t _end; /* Defined by the linker */
+	extern caddr_t __bss_stop; /* Defined by the linker */
 	static caddr_t *heap_end;
 	caddr_t *prev_heap_end;
 //	write (2, "sbrk\n", 5);
 	if (heap_end == 0)
 	{
 //		write (2, "sbrk end\n", 9);
-		heap_end = &_end;
+		heap_end = &__bss_stop;
 	}
 	prev_heap_end = heap_end;
 //	if (heap_end + incr > stack_ptr) {
@@ -252,17 +252,6 @@ clock_t times(struct tms *buf){
 	buf->tms_cutime = 0;
 
 	return proc_time;
-}
-
-void __stack_chk_fail(void)
-{
-	struct container *container = get_container();
-	if (container == NULL)
-		return;
-	else if (container->write == NULL)
-		return;
-	else
-		container->write(2, "Stack smashing detected.\n", 25, container->container_host);
 }
 
 unsigned char inportbyte(unsigned int port)
