@@ -5,7 +5,8 @@
 
 extern int main(int argc, char *argv[]);
 
-extern char __bss_start, _end; // BSS should be the last thing before _end
+extern char __bss_start;
+extern char __bss_stop;
 
 static void zero_bss(void);
 
@@ -27,6 +28,6 @@ int _start(struct container *container)
 
 static void zero_bss(void)
 {
-	for(char *c = &__bss_start; c < &_end; c++)
+	for(char *c = &__bss_start; c < &__bss_stop; c++)
 		*c = 0;
 }
