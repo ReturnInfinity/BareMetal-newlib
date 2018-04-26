@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-char tempstring[32];
-
 int main(int argc, char *argv[])
 {
 	struct tm *local;
@@ -23,10 +21,7 @@ int main(int argc, char *argv[])
 	local = localtime(&t);
 	printf("Local time and date: %s\n", asctime(local));
 
-	// Test IO
-	printf("%s %d\n", "Output:", 1234);
-	printf("Enter some text: ");
-	fgets(tempstring, 32, stdin);			// Get up to 32 chars from the keyboard
-	printf("You entered: '%s'", tempstring);
-	exit(1);
+	printf("%s %d\n", "printf-example:", 1234);
+
+	return 0;
 }
