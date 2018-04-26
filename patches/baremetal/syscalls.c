@@ -15,8 +15,10 @@
 #include <stdio.h>
 #include <errno.h>
 
-inline unsigned char inportbyte(unsigned int port);
-inline void outportbyte(unsigned int port,unsigned char value);
+#include "container.h"
+
+unsigned char inportbyte(unsigned int port);
+void outportbyte(unsigned int port,unsigned char value);
 
 // --- Process Control ---
 
@@ -116,6 +118,11 @@ int open(const char *name, int flags, ...)
 // read - Read from a file
 int read(int file, char *ptr, int len)
 {
+	(void) file;
+	(void) ptr;
+	(void) len;
+	return -1;
+#if 0
 	if (file == 0) // STDIN
 	{
 		asm volatile ("call *0x00100010" : "=c"(len) : "c"(len), "D"(ptr));
@@ -124,6 +131,7 @@ int read(int file, char *ptr, int len)
 		len+=1;
 	}
 	return len;
+#endif
 }
 
 // fstat - Status of an open file.
@@ -149,21 +157,6 @@ int unlink(char *name)
 	return -1;
 }
 
-// write - Write to a file
-int write(int file, char *ptr, int len)
-{
-	if (file == 1 || file == 2) // STDOUT = 1, STDERR = 2
-	{
-		asm volatile ("call *0x00100018" : : "S"(ptr), "c"(len)); // Make sure source register (RSI) has the string address (str)
-	}
-	else
-	{
-		// File!
-		return -1;
-	}
-	return len;
-}
-
 // --- Memory ---
 
 /* _end is set in the linker command file */
@@ -183,14 +176,14 @@ int write(int file, char *ptr, int len)
 caddr_t sbrk(int incr)
 {
 //	asm volatile ("xchg %bx, %bx"); // Debug
-	extern caddr_t _end; /* Defined by the linker */
+	extern caddr_t __bss_stop; /* Defined by the linker */
 	static caddr_t *heap_end;
 	caddr_t *prev_heap_end;
 //	write (2, "sbrk\n", 5);
 	if (heap_end == 0)
 	{
 //		write (2, "sbrk end\n", 9);
-		heap_end = &_end;
+		heap_end = &__bss_stop;
 	}
 	prev_heap_end = heap_end;
 //	if (heap_end + incr > stack_ptr) {
@@ -261,12 +254,7 @@ clock_t times(struct tms *buf){
 	return proc_time;
 }
 
-void __stack_chk_fail(void)
-{
-	write(1, "Stack smashin' detected!\n", 25);
-}
-
-inline unsigned char inportbyte(unsigned int port)
+unsigned char inportbyte(unsigned int port)
 {
 	// read a byte from a port
 	unsigned char ret;
@@ -274,7 +262,7 @@ inline unsigned char inportbyte(unsigned int port)
 	return ret;
 }
 
-inline void outportbyte(unsigned int port,unsigned char value)
+void outportbyte(unsigned int port,unsigned char value)
 {
 	// write a byte to a port
 	asm volatile ("outb %%al,%%dx": :"d"(port),"a"(value));
