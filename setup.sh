@@ -2,7 +2,21 @@
 
 set -e
 
+opts=`getopt -o v:p: --long newlib-version:,prefix: -- "$@"`
+
+eval set -- "$opts"
+
 ver="3.0.0"
+prefix="${PWD}/output"
+
+while true; do
+	case "$1" in
+		-v | --newlib-version) ver="$2"; shift 2;;
+		-p | --prefix) prefix="$2"; shift 2;;
+		-- ) shift; break;;
+		* ) break;;
+	esac
+done
 
 if [ ! -e "newlib-$ver.tar.gz" ]; then
 	echo Downloading newlib
@@ -43,7 +57,9 @@ CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -fomit-frame-pointer"
 CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET} -g"
 export CFLAGS_FOR_TARGET
 
-../newlib-$ver/configure --target=x86_64-pc-baremetal --disable-multilib
+echo "INSTALLING AT $prefix"
+
+../newlib-$ver/configure --target=x86_64-pc-baremetal --disable-multilib --prefix="$prefix"
 
 sed -i 's/TARGET=x86_64-pc-baremetal-/TARGET=/g' Makefile
 sed -i 's/WRAPPER) x86_64-pc-baremetal-/WRAPPER) /g' Makefile
