@@ -3,7 +3,7 @@
 Introduction
 ------------
 
-This repository contains the files, script, and instructions necessary to build the [newlib](http://sourceware.org/newlib/) C library for BareMetal OS. The latest version of Newlib as of this writing is 2.5.0
+This repository contains the files, script, and instructions necessary to build the [newlib](http://sourceware.org/newlib/) C library for BareMetal OS. The latest version of Newlib as of this writing is 3.3.0
 
 newlib gives BareMetal OS access to the standard set of C library calls like `printf()`, `scanf()`, `memcpy()`, etc.
 
@@ -15,7 +15,7 @@ Building Details
 
 You will need the following Linux packages. Use your prefered packange manager to install them:
 
-	autoconf libtool sed gawk bison flex m4 texinfo texi2html unzip make
+	autoconf libtool sed gawk bison flex m4 texinfo texi2html unzip make automake1.11
 
 Run the build script:
 
